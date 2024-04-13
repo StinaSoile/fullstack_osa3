@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+
 const morgan = require('morgan')
 app.use(express.json())
 // app.use(morgan('tiny'))
@@ -101,7 +102,13 @@ app.post('/api/persons', (request, response) => {
     response.json(person)
 })
 
-const PORT = 3001
+// alkup. versio ennen PaaS-hommia
+// const PORT = 3001
+// app.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`)
+// })
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
