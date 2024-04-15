@@ -3,6 +3,8 @@ const app = express()
 
 const morgan = require('morgan')
 app.use(express.json())
+const cors = require('cors')
+app.use(cors())
 // app.use(morgan('tiny'))
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
@@ -76,14 +78,20 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = (request.params.id)
+    const personToRemove = persons.find(person => person.id === id)
     persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+    // return response.status(200).json(personToRemove)
+    if (!personToRemove) {
+        return response.status(400).json({
+            error: 'Content missing'
+        })
+    }
+    response.json(personToRemove)
 })
 
 app.post('/api/persons', (request, response) => {
-    const id = Math.random() * 1000
-
+    const idMath = Math.floor(Math.random() * 1000)
+    const id = idMath.toString()
     const person = request.body
 
     if (!person.name || !person.number) {
